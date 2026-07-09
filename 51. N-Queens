@@ -1,0 +1,48 @@
+in c++
+#include <vector>
+#include <string>
+
+using namespace std;
+
+class Solution {
+    vector<vector<string>> results;
+    vector<bool> cols, diag1, diag2;
+
+public:
+    vector<vector<string>> solveNQueens(int n) {
+        // Initialize tracking arrays
+        cols.assign(n, false);
+        diag1.assign(2 * n, false); // row + col
+        diag2.assign(2 * n, false); // row - col + n
+        
+        vector<string> board(n, string(n, '.'));
+        backtrack(0, n, board);
+        return results;
+    }
+
+private:
+    void backtrack(int row, int n, vector<string>& board) {
+        if (row == n) {
+            results.push_back(board);
+            return;
+        }
+
+        for (int col = 0; col < n; col++) {
+            // Check if placing a queen here is safe
+            // diag1: sum of indices is constant along / diagonals
+            // diag2: difference of indices is constant along \ diagonals
+            if (!cols[col] && !diag1[row + col] && !diag2[row - col + n]) {
+                // Place Queen
+                board[row][col] = 'Q';
+                cols[col] = diag1[row + col] = diag2[row - col + n] = true;
+
+                // Move to next row
+                backtrack(row + 1, n, board);
+
+                // Backtrack (Remove Queen)
+                board[row][col] = '.';
+                cols[col] = diag1[row + col] = diag2[row - col + n] = false;
+            }
+        }
+    }
+};
